@@ -8,3 +8,7 @@ response.raise_for_status
 content = response.text
 
 soup = BeautifulSoup(content, "html.parser")
+
+song_title_list = soup.select("div ul li ul h3")
+song_title = [song.text.strip() for song in song_title_list]
+print(f"song: {song_title}")
