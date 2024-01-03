@@ -21,7 +21,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     cache_path="token.txt"
 ))
 user_id = sp.user(USER_NAME)["id"]
-print(user_id)
 
 # params = {
 #     "response_type": "code",
@@ -35,27 +34,27 @@ print(user_id)
 # response.raise_for_status
 # print(response.text)
 
-# user_date = input("Which year do you want to travel to? Type the date in this format YYYY-MM-DD:\n")
+user_date = input("Which year do you want to travel to? Type the date in this format YYYY-MM-DD:\n")
 
-# response = requests.get(url=f"https://www.billboard.com/charts/hot-100/{user_date}")
-# response.raise_for_status
-# content = response.text
+response = requests.get(url=f"https://www.billboard.com/charts/hot-100/{user_date}")
+response.raise_for_status
+content = response.text
 
-# soup = BeautifulSoup(content, "html.parser")
+soup = BeautifulSoup(content, "html.parser")
 
-# song_title_list = soup.select("div ul li ul h3")
-# song_title_names = [song.text.strip() for song in song_title_list]
-# song_uris = []
+song_title_list = soup.select("div ul li ul h3")
+song_title_names = [song.text.strip() for song in song_title_list]
+song_uris = []
 
-# year = user_date.split("-")[0]
-# for song in song_title_names:
-#     result = sp.search(q=f"track:{song} year:{year}", type="track")
-#     # print(result)
-#     try:
-#         uri = result["tracks"]["items"][0]["uri"]
-#         song_uris.append(uri)
-#     except IndexError:
-#         print(f"{song} doesn't exist in Spotify. Skipped")
+year = user_date.split("-")[0]
+for song in song_title_names:
+    result = sp.search(q=f"track:{song} year:{year}", type="track")
+    # print(result)
+    try:
+        uri = result["tracks"]["items"][0]["uri"]
+        song_uris.append(uri)
+    except IndexError:
+        print(f"{song} doesn't exist in Spotify. Skipped")
 
-# playlist = sp.user_playlist_create(user=user_id, name=f"{user_date} BIllboard 100", public=False)
-# sp.playlist_add_items(playlist_id=playlist["id"], items=song_uris)
+playlist = sp.user_playlist_create(user=user_id, name=f"{user_date} BIllboard 100", public=False)
+sp.playlist_add_items(playlist_id=playlist["id"], items=song_uris)
